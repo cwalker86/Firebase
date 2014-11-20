@@ -30,4 +30,5 @@ angular
       .otherwise({
         redirectTo: '/'
       });
-  });
+  })
+  .constant('FBURL', 'https://torid-inferno-4604.firebaseio.com');
