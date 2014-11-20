@@ -58,24 +58,56 @@ angular.module('firebaseApp')
     // };
 /***************************************************************************/
 
-    // Just getting one item from firebase, instead of the entire collection
-    // child_added -> when page initially loaded, go out and fetch all messages
-    //             -> anytime a new child is added, only return the child of messages node
     messagesRef.on('child_added', function(snapshot) {
       $timeout(function() {
         var snapshotVal = snapshot.val();
         console.log(snapshotVal);
-        // when this is called for each child, push onto messages, rather than assigning
-        $scope.messages.push(snapshotVal);
+        $scope.messages.push({
+          text: snapshotVal.text,
+          user: snapshotVal.user,
+          name: snapshot.name()
+        });
       });
     });
 
-    // messagesRef.on('value', function(snapshot) {
-    //   $timeout(function() {
-    //     var snapshotVal = snapshot.val();
-    //     $scope.messages = snapshotVal;
-    //   });
-    // });
+    messagesRef.on('child_changed', function(snapshot) {
+      $timeout(function() {
+        var snapshotVal = snapshot.val();
+        var message = findMessageByName(snapshot.name());
+        console.log(message);
+        message.text = snapshotVal.text;
+      });
+    });
+
+    messagesRef.on('child_removed', function(snapshot) {
+      $timeout(function() {
+        deleteMessageByName(snapshot.name());
+      });
+    });
+
+    function deleteMessageByName(name) {
+      for(var i=0; i < $scope.messages.length; i++) {
+        var currentMessage = $scope.messages[i];
+        if (currentMessage.name === name) {
+          // splice current item off array
+          $scope.messages.splice(i, 1);
+          break;
+        }
+      }
+    }
+
+    function findMessageByName(name) {
+      var messageFound = null;
+      for(var i=0; i < $scope.messages.length; i++) {
+        var currentMessage = $scope.messages[i];
+        if (currentMessage.name === name) {
+          messageFound = currentMessage;
+          break;
+        }
+      }
+
+      return messageFound;
+    }
 
     $scope.sendMessage = function () {
       var newMessage = {
