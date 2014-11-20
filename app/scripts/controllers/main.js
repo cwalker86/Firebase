@@ -15,9 +15,13 @@ angular.module('firebaseApp')
 
     childRef.on('value', function(snapshot) {
       $timeout(function () {
-      var snapshotVal = snapshot.val();
-      console.log(snapshotVal);
-      $scope.message = snapshotVal;
+        //iterate through snapshot, picture of the database in real time
+        snapshot.forEach(function(item) {
+          console.log(item.key() + ' - ' + item.val());
+          console.log(item.ref());
+        });
+        var snapshotVal = snapshot.val();
+        $scope.message = snapshotVal;
       });
     });
 
