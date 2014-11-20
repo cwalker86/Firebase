@@ -1,8 +1,11 @@
+<h2> {{ title }} </h2>
 <div class="jumbotron">
   <div ng-repeat="message in messages">
     {{ message.user }} - {{ message.text }}
   </div>
 </div>
+
+<button type="button" class="btn btn-danger" ng-click="turnFeedOff()">Turn feed off</button>
 
 <div class="row marketing">
   <div class="input-group">
@@ -17,18 +20,3 @@
     </span>
   </div>
 </div>
-
-<!-- <div class="row marketing">
-
-  <input type="text" class="form-control" ng-model="message.text" />
-
-  <button type="button"
-          class="btn btn-success"
-          ng-click="setMessage()">Set Message</button>
-  <button type="button"
-          class="btn btn-warning"
-          ng-click="updateMessage()">Update Message</button>
-  <button type="button"
-          class="btn btn-danger"
-          ng-click="deleteMessage()">Delete Message</button>
-</div> -->

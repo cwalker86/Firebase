@@ -12,51 +12,19 @@ angular.module('firebaseApp')
   .controller('MainCtrl', function ($scope, $timeout) {
     var rootRef = new Firebase('https://torid-inferno-4604.firebaseio.com/');
     var messagesRef = rootRef.child('messages');
+    var titleRef = rootRef.child('title');
 
+    $scope.title = null;
     $scope.currentUser = null;
     $scope.currentText = null;
     $scope.messages = [];
 
-/******************LEGACY*************CODE****************11/19/14***********/
-    // messagesRef.on('value', function(snapshot) {
-    //   $timeout(function () {
-    //     // iterate through snapshot, picture of the database in real time
-    //     // snapshot.forEach(function(item) {
-    //     //   console.log(item.name() + ' - ' + item.val());
-    //     //   console.log(item.ref());
-    //     // });
-    //     var snapshotVal = snapshot.val();
-    //     console.log(snapshotVal);
-    //     $scope.messages = snapshotVal;
-    //   });
-    // });
-    //
-    // $scope.$watch('messages.text', function(newVal) {
-    //   if (!newVal) {
-    //     return;
-    //   }
-    //   messagesRef.update({
-    //     text: newVal
-    //   });
-    // });
-    //
-    // $scope.setMessage = function() {
-    //   rootRef.child('messages').set({
-    //     user: 'Erin',
-    //     text: 'Hiiii!!!!'
-    //   });
-    // };
-    //
-    // $scope.updateMessage = function() {
-    //   messagesRef.update({
-    //     text: 'I love my hubby'
-    //   });
-    // };
-    //
-    // $scope.deleteMessage = function() {
-    //   messagesRef.remove();
-    // };
-/***************************************************************************/
+    // execute for titleRef once!
+    titleRef.once('value', function(snapshot) {
+      $scope.title = snapshot.val();
+      // we don't care if titleRef updates
+      // titleRef.off();
+    });
 
     messagesRef.on('child_added', function(snapshot) {
       $timeout(function() {
@@ -117,5 +85,10 @@ angular.module('firebaseApp')
 
       //push to messages node
       messagesRef.push(newMessage);
+    };
+
+    $scope.turnFeedOff = function () {
+      // per single connection, turn feed off
+      messagesRef.off();
     };
   });
