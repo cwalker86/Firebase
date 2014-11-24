@@ -31,7 +31,8 @@ angular.module('firebaseApp')
       // REFACTORED
       var promise = MessageService.add(newMessage);
       promise.then(function(data) {
-        console.log(data.name());
+        // REFACTORED from using data.name()
+        console.log(data.key());
       });
     };
 

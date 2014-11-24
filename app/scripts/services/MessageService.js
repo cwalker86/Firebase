@@ -8,7 +8,10 @@
     var messageRef = new Firebase(FBURL).child('messages');
 
     // Angularfire power
-    var fireMessage = $firebase(messageRef).$asArray();
+    var fireMessage = $firebase(messageRef);
+
+    // Angularfire as an array, to use the $add function for addMessage
+    var fireList = fireMessage.$asArray();
 
     return {
       childAdded: function childAdded(limitNumber, cb) {
@@ -20,14 +23,14 @@
           cb.call(this, {
             user: val.user,
             text: val.text,
-            name: snapshot.name()
+            name: snapshot.key()
           });
         });
       },
       add: function addMessage(message) {
         // messageRef.push(message);
         // REFACTORED - returns unique key after pushed message as a promise
-        return fireMessage.$add(message);
+        return fireList.$add(message);
       },
       off: function turnMessagesOff() {
         messageRef.off();
