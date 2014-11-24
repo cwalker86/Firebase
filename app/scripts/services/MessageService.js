@@ -6,8 +6,9 @@
     // constant definded in app.js
     var messageRef = new Firebase(FBURL).child('messages');
     return {
-      childAdded: function childAdded(cb) {
-        messageRef.on('child_added', function(snapshot) {
+      childAdded: function childAdded(limitNumber, cb) {
+        // limit the amount given as the limit number
+        messageRef.limit(limitNumber).on('child_added', function(snapshot) {
           var val = snapshot.val();
           cb.call(this, {
             user: val.user,

@@ -15,7 +15,7 @@ angular.module('firebaseApp')
     $scope.currentText = null;
     $scope.messages = [];
 
-    MessageService.childAdded(function(addedChild) {
+    MessageService.childAdded(10, function(addedChild) {
       $timeout(function() {
         $scope.messages.push(addedChild);
       });
