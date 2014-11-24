@@ -8,8 +8,10 @@
     return {
       childAdded: function childAdded(limitNumber, cb) {
         // limit the amount given as the limit number
-        messageRef.limit(limitNumber).on('child_added', function(snapshot) {
+        // messageRef.startAt(null, '-JbHtNG-tibjQcTynY1S').endAt(null, '-JbHuUVpgsx42IWaLSXk').on('child_added', function(snapshot) {
+        messageRef.startAt(null, '-JbHtNG-tibjQcTynY1S').limit(limitNumber).on('child_added', function(snapshot) {
           var val = snapshot.val();
+
           cb.call(this, {
             user: val.user,
             text: val.text,
