@@ -27,7 +27,12 @@ angular.module('firebaseApp')
         text: $scope.currentText
       };
 
-      MessageService.add(newMessage);
+      // MessageService.add(newMessage);
+      // REFACTORED
+      var promise = MessageService.add(newMessage);
+      promise.then(function(data) {
+        console.log(data.name());
+      });
     };
 
     $scope.turnFeedOff = function() {

@@ -8,13 +8,13 @@
     var messageRef = new Firebase(FBURL).child('messages');
 
     // Angularfire power
-    var fireMessage = $firebase(messageRef);
+    var fireMessage = $firebase(messageRef).$asArray();
 
     return {
       childAdded: function childAdded(limitNumber, cb) {
         // limit the amount given as the limit number
         // messageRef.startAt(null, '-JbHtNG-tibjQcTynY1S').endAt(null, '-JbHuUVpgsx42IWaLSXk').on('child_added', function(snapshot) {
-        messageRef.startAt(null, '-JbHtNG-tibjQcTynY1S').limit(limitNumber).on('child_added', function(snapshot) {
+        messageRef.on('child_added', function(snapshot) {
           var val = snapshot.val();
 
           cb.call(this, {
@@ -25,7 +25,9 @@
         });
       },
       add: function addMessage(message) {
-        messageRef.push(message);
+        // messageRef.push(message);
+        // REFACTORED - returns unique key after pushed message as a promise
+        return fireMessage.$add(message);
       },
       off: function turnMessagesOff() {
         messageRef.off();
