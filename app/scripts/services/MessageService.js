@@ -2,9 +2,14 @@
 (function(angular) {
   'use strict';
 
-  angular.module('firebaseApp').service('MessageService', function(FBURL, $q) {
+  angular.module('firebaseApp').service('MessageService', function(FBURL, $q, $firebase) {
+
     // constant definded in app.js
     var messageRef = new Firebase(FBURL).child('messages');
+
+    // Angularfire power
+    var fireMessage = $firebase(messageRef);
+
     return {
       childAdded: function childAdded(limitNumber, cb) {
         // limit the amount given as the limit number
