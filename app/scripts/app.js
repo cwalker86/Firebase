@@ -32,4 +32,5 @@ angular
         redirectTo: '/'
       });
   })
-  .constant('FBURL', 'https://torid-inferno-4604.firebaseio.com');
+  .constant('FBURL', 'https://torid-inferno-4604.firebaseio.com')
+  .constant('MSGURL', 'https://torid-inferno-4604.firebaseio.com/messages');

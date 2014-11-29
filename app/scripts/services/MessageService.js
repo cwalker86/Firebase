@@ -2,10 +2,10 @@
 (function(angular) {
   'use strict';
 
-  angular.module('firebaseApp').service('MessageService', function(FBURL, $q, $firebase) {
+  angular.module('firebaseApp').service('MessageService', function(MSGURL, $q, $firebase) {
 
     // constant definded in app.js
-    var messageRef = new Firebase(FBURL).child('messages');
+    var messageRef = new Firebase(MSGURL);
 
     // Angularfire power
     var fireMessage = $firebase(messageRef);
@@ -14,12 +14,9 @@
     var fireList = fireMessage.$asArray();
 
     return {
-      childAdded: function childAdded(limitNumber, cb) {
-        // limit the amount given as the limit number
-        // messageRef.startAt(null, '-JbHtNG-tibjQcTynY1S').endAt(null, '-JbHuUVpgsx42IWaLSXk').on('child_added', function(snapshot) {
+      childAdded: function childAdded(cb) {
         messageRef.on('child_added', function(snapshot) {
           var val = snapshot.val();
-
           cb.call(this, {
             user: val.user,
             text: val.text,
@@ -39,39 +36,62 @@
         // need to create defer
         var deferred = $q.defer();
         var messages = [];
+        var pageMessageRef = new Firebase(MSGURL).startAt(null, name).limitToFirst(numberOfItems);
 
-        messageRef.startAt(null, name).limit(numberOfItems).once('value', function(snapshot) {
-          // loop and return as snapshot
-          snapshot.forEach(function(snapItem) {
-            var itemVal = snapItem.val();
-            // return name as a function
-            itemVal.name = snapItem.name();
-            // push item to messages array
-            messages.push(itemVal);
+        // messageRef.startAt(null, name).limit(numberOfItems).once('value', function(snapshot) {
+        //   // loop and return as snapshot
+        //   snapshot.forEach(function(snapItem) {
+        //     var itemVal = snapItem.val();
+        //     // return name as a function
+        //     itemVal.name = snapItem.name();
+        //     // push item to messages array
+        //     messages.push(itemVal);
+        //   });
+        //   // set up deferred
+        //   deferred.resolve(messages);
+        // });
+
+        $firebase(pageMessageRef).$asArray().$loaded(function(data) {
+          var keys = Object.keys(data);
+          angular.forEach(keys, function(key) {
+            var item = data[key];
+            item.name = key;
+            messages.push(item);
           });
-          // set up deferred
           deferred.resolve(messages);
         });
 
         return deferred.promise;
       },
-      pageBack: function pageBack() {
+      pageBack: function pageBack(name, numberOfItems) {
         var deferred = $q.defer();
         var messages = [];
 
-        // refactor this into a shared function later
-        messageRef.endAt(null, name).limit(numberOfItems).once('value', function(snapshot) {
-          // loop and return as snapshot
-          snapshot.forEach(function(snapItem) {
-            var itemVal = snapItem.val();
-            // return name as a function
-            itemVal.name = snapItem.name();
-            // push item to messages array
-            messages.push(itemVal);
+        // // refactor this into a shared function later
+        // messageRef.endAt(null, name).limit(numberOfItems).once('value', function(snapshot) {
+        //   // loop and return as snapshot
+        //   snapshot.forEach(function(snapItem) {
+        //     var itemVal = snapItem.val();
+        //     // return name as a function
+        //     itemVal.name = snapItem.name();
+        //     // push item to messages array
+        //     messages.push(itemVal);
+        //   });
+        //   // set up deferred
+        //   deferred.resolve(messages);
+        // });
+
+          var pageMessageRef = new Firebase(MSGURL).endAt(null, name).limit(numberOfItems);
+
+          $firebase(pageMessageRef).$on('loaded', function(data) {
+            var keys = Object.keys(data);
+            angular.forEach(keys, function(key) {
+              var item = data[key];
+              item.name = key;
+              messages.push(item);
+            });
+            deferred.resolve(messages);
           });
-          // set up deferred
-          deferred.resolve(messages);
-        });
 
         return deferred.promise;
       }
