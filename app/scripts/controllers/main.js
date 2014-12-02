@@ -39,16 +39,29 @@ angular.module('firebaseApp')
       MessageService.off();
     };
 
+    // $scope.pageNext = function() {
+    //   var lastItem = $scope.messages[$scope.messages.length - 1];
+    //   // then because of promise return
+    //   MessageService.pageNext(lastItem.name, 10).then(function(messages) {
+    //     $scope.messages = messages;
+    //   });
+    // };
+    //
+    // $scope.pageBack = function() {
+    //   var firstItem = $scope.message[0];
+    //   MessageService.pageBack(firstItem.name, 10).then(function(messages) {
+    //     $scope.messages = messages;
+    //   });
+    // };
     $scope.pageNext = function() {
       var lastItem = $scope.messages[$scope.messages.length - 1];
-      // then because of promise return
       MessageService.pageNext(lastItem.name, 10).then(function(messages) {
         $scope.messages = messages;
       });
     };
 
     $scope.pageBack = function() {
-      var firstItem = $scope.message[0];
+      var firstItem = $scope.messages[0];
       MessageService.pageBack(firstItem.name, 10).then(function(messages) {
         $scope.messages = messages;
       });

@@ -33,25 +33,10 @@
         messageRef.off();
       },
       pageNext: function pageNext(name, numberOfItems) {
-        // need to create defer
         var deferred = $q.defer();
         var messages = [];
-        var pageMessageRef = new Firebase(MSGURL).startAt(null, name).limitToFirst(numberOfItems);
-
-        // messageRef.startAt(null, name).limit(numberOfItems).once('value', function(snapshot) {
-        //   // loop and return as snapshot
-        //   snapshot.forEach(function(snapItem) {
-        //     var itemVal = snapItem.val();
-        //     // return name as a function
-        //     itemVal.name = snapItem.name();
-        //     // push item to messages array
-        //     messages.push(itemVal);
-        //   });
-        //   // set up deferred
-        //   deferred.resolve(messages);
-        // });
-
-        $firebase(pageMessageRef).$asArray().$loaded(function(data) {
+        var pageMessageRef = new Firebase(MSGURL).startAt(null, name).limit(numberOfItems);
+        $firebase(pageMessageRef).$on('loaded', function(data) {
           var keys = Object.keys(data);
           angular.forEach(keys, function(key) {
             var item = data[key];
@@ -61,37 +46,23 @@
           deferred.resolve(messages);
         });
 
+
         return deferred.promise;
       },
       pageBack: function pageBack(name, numberOfItems) {
         var deferred = $q.defer();
         var messages = [];
+        var pageMessageRef = new Firebase(MSGURL).endAt(null, name).limit(numberOfItems);
 
-        // // refactor this into a shared function later
-        // messageRef.endAt(null, name).limit(numberOfItems).once('value', function(snapshot) {
-        //   // loop and return as snapshot
-        //   snapshot.forEach(function(snapItem) {
-        //     var itemVal = snapItem.val();
-        //     // return name as a function
-        //     itemVal.name = snapItem.name();
-        //     // push item to messages array
-        //     messages.push(itemVal);
-        //   });
-        //   // set up deferred
-        //   deferred.resolve(messages);
-        // });
-
-          var pageMessageRef = new Firebase(MSGURL).endAt(null, name).limit(numberOfItems);
-
-          $firebase(pageMessageRef).$on('loaded', function(data) {
-            var keys = Object.keys(data);
-            angular.forEach(keys, function(key) {
-              var item = data[key];
-              item.name = key;
-              messages.push(item);
-            });
-            deferred.resolve(messages);
+        $firebase(pageMessageRef).$on('loaded', function(data) {
+          var keys = Object.keys(data);
+          angular.forEach(keys, function(key) {
+            var item = data[key];
+            item.name = key;
+            messages.push(item);
           });
+          deferred.resolve(messages);
+        });
 
         return deferred.promise;
       }
