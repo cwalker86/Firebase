@@ -47,6 +47,7 @@ angular.module('firebaseApp')
     //   });
     // };
     //
+
     // $scope.pageBack = function() {
     //   var firstItem = $scope.message[0];
     //   MessageService.pageBack(firstItem.name, 10).then(function(messages) {
